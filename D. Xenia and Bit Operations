@@ -1,0 +1,84 @@
+//https://codeforces.com/contest/339/problem/D
+
+#include <bits/stdc++.h>
+using namespace std;
+
+int m;
+void build_tree(vector<int>& arr, vector<int>& segTree, int low, int high, int index) {
+    if (low == high) {
+        segTree[index] = arr[low];
+        return;
+    }
+    int mid = low + (high - low) / 2;
+    build_tree(arr, segTree, low, mid, 2 * index + 1);
+    build_tree(arr, segTree, mid + 1, high, 2 * index + 2);
+    int height=m-floor(log2(index+1));
+    int to_or=(height%2);
+    if(to_or)segTree[index] = segTree[2 * index + 1] | segTree[2 * index + 2];
+    else segTree[index] = segTree[2 * index + 1] ^ segTree[2 * index + 2];
+}
+
+void updates(vector<int>& segTree, vector<int>& arr, int i, int new_val, int low, int high, int index) {
+    if (low == high) {
+        arr[i] = new_val;
+        segTree[index] = new_val;
+        return;
+    }
+    int mid = low + (high - low) / 2;
+    if (i <= mid) updates(segTree, arr, i, new_val, low, mid, 2 * index + 1);
+    else updates(segTree, arr, i, new_val, mid + 1, high, 2 * index + 2);
+    int height=m-floor(log2(index+1));
+    int to_or=(height%2);
+    if(to_or)segTree[index] = segTree[2 * index + 1] | segTree[2 * index + 2];
+    else segTree[index] = segTree[2 * index + 1] ^ segTree[2 * index + 2];
+}
+
+int query(vector<int>& segTree, int x, int y, int low, int high, int index) {
+    // if (high < x || low > y) return INT_MAX;
+    // if (low >= x && high <= y) return segTree[index];
+    // int mid = low + (high - low) / 2;
+    // return min(query(segTree, x, y, low, mid, 2 * index + 1), query(segTree, x, y, mid + 1, high, 2 * index + 2));
+    return segTree[0];
+}
+
+int main() {
+    int n,q;
+    cin >> n>>q;
+    m=n;
+    n=pow(2,n);
+    vector<int> arr(n);
+    for (auto &it : arr) cin >> it;
+    vector<int> segTree(4 * n);
+    build_tree(arr, segTree, 0, n - 1, 0);
+    // for (auto it : segTree) {
+    //     cout << it << " ";
+    // }
+    // cout << endl;
+   // int q;cin>>q;
+    
+    /*
+            4
+          3    7
+        1  2  3  4
+        
+ 
+               0 
+          7       7   
+        1   6   3    5
+        
+        
+            1
+        1       1
+    
+    */
+    
+
+    for (int i = 0; i < q; i++) {
+        int l, r;
+        cin >> l >> r;
+        l--;
+        updates(segTree, arr, l, r, 0, n - 1, 0);
+        cout<<segTree[0]<<endl;
+    }
+    return 0;
+}
