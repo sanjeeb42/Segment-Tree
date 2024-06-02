@@ -37,7 +37,7 @@ public:
         if (low >= x && high <= y)
             return segTree[index];
         int mid = (high + low) / 2;
-        return min(query(segTree, x, y, low, mid, 2 * index + 1), query(segTree, x, y, mid + 1, high, 2 * index + 2));
+        return query(segTree, x, y, low, mid, 2 * index + 1)& query(segTree, x, y, mid + 1, high, 2 * index + 2));
     }
 };
 
