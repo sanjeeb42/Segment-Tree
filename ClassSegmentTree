@@ -1,4 +1,4 @@
-//Template From Sanjeeb42 :https://github.com/sanjeeb42/Segment-Tree/edit/main/ClassSegmentTree
+//Template From Sanjeeb42 :https://github.com/sanjeeb42/Segment-Tree/blob/main/ClassSegmentTree
 
 #define ll long long
 class SegmentTree {
