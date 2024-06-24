@@ -1,11 +1,28 @@
+//Template From Sanjeeb42 :https://github.com/sanjeeb42/Segment-Tree/edit/main/ClassSegmentTree
+
 #define ll long long
 class SegmentTree {
 public:
     vector<ll> segTree;
-
-    SegmentTree(ll n) {
+    int n;
+    SegmentTree(ll length) {
+        n=length;
         segTree.resize(4 * n, 0);
     }
+
+    void build(vector<int>&arr){
+        build_tree(arr,0,n-1,0);
+    }
+
+    void update(vector<int>&arr,int i,int new_val){
+        update_tree(arr,i,new_val,0,n-1,0);
+    }
+
+    ll query(int l,int r){
+        return query_tree(l,r,0,n-1,0);
+    }
+
+private:
 
     void build_tree(vector<int>& arr, int low, int high, int index) {
         if (low == high) {
@@ -18,7 +35,7 @@ public:
         segTree[index] = max(segTree[2 * index + 1], segTree[2 * index + 2]);
     }
 
-    void updates(vector<int>& arr, int i, int new_val, int low, int high, int index) {
+    void update_tree(vector<int>& arr, int i, int new_val, int low, int high, int index) {
         if (low == high) {
             arr[i] = new_val;
             segTree[index] = new_val;
@@ -26,24 +43,18 @@ public:
         }
         int mid = (high + low) / 2;
         if (i <= mid)
-            updates(arr, i, new_val, low, mid, 2 * index + 1);
+            update_tree(arr, i, new_val, low, mid, 2 * index + 1);
         else
-            updates(arr, i, new_val, mid + 1, high, 2 * index + 2);
+            update_tree(arr, i, new_val, mid + 1, high, 2 * index + 2);
         segTree[index] = max(segTree[2 * index + 1], segTree[2 * index + 2]);
     }
 
-    ll query(int x, int y, int low, int high, int index) {
+    ll query_tree(int x, int y, int low, int high, int index) {
         if (high < x || low > y)
             return LLONG_MIN;
         if (low >= x && high <= y)
             return segTree[index];
         int mid = (high + low) / 2;
-        return max(query(x, y, low, mid, 2 * index + 1), query(x, y, mid + 1, high, 2 * index + 2));
+        return max(query_tree(x, y, low, mid, 2 * index + 1),query_tree(x, y, mid + 1, high, 2 * index + 2));
     }
 };
-
-
-//Initialisation
-
-SegmentTree obj = new SegmentTree(n);
-obj->build_tree(arr, 0, n - 1, 0);
